@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cognito-auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cognito-auth-service
+  template:
+    metadata:
+      labels:
+        app: cognito-auth-service
+    spec:
+      containers:
+        - name: cognito-auth-service
+          image: your-docker-repo/cognito-auth-service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: AWS_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secrets
+                  key: AWS_REGION
+            - name: COGNITO_USER_POOL_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secrets
+                  key: COGNITO_USER_POOL_ID
+            - name: COGNITO_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secrets
+                  key: COGNITO_CLIENT_ID
+            - name: COGNITO_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secrets
+                  key: COGNITO_CLIENT_SECRET
