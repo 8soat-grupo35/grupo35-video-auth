@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: cognito-go-app
-          image: irlan/grupo35-video-auth:latest
+          image: video-auth:latest
           ports:
             - containerPort: 8080
           env:
