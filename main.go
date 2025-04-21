@@ -111,6 +111,8 @@ func handleCallback(writer http.ResponseWriter, request *http.Request) {
 		Claims:      claims,
 	}
 
+	fmt.Println("Claims:", claims)
+
 	// Define o template HTML
 	tmpl := `
     <html>

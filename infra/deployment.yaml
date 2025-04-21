@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: video-auth
-          image: video-auth
+          image: video-auth:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
