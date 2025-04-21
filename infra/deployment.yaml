@@ -1,20 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cognito-go-app
+  name: video-auth
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: cognito-go-app
+      app: video-auth
   template:
     metadata:
       labels:
-        app: cognito-go-app
+        app: video-auth
     spec:
       containers:
-        - name: cognito-go-app
-          image: video-auth:latest
+        - name: video-auth
+          image: video-auth
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
