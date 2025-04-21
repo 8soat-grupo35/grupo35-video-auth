@@ -1,11 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: cognito-auth-service
+  name: cognito-go-app
 spec:
-  type: LoadBalancer
-  ports:
-    - port: 80
-      targetPort: 8080
   selector:
-    app: cognito-auth-service
+    app: cognito-go-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP # ou LoadBalancer se você precisar de acesso externo diretamente

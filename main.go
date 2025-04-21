@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/coreos/go-oidc"
 	"github.com/golang-jwt/jwt/v4"
@@ -18,23 +19,30 @@ type ClaimsPage struct {
 }
 
 var (
-	clientID     = "2v0henecrkp0b6i4o4t6ougm8h"
-	clientSecret = "iig7k8cfi8nrfld2hj3ddmdl8nk21ujp6u116pqp3m7ko7trm0h"
-	redirectURL  = "https://diariodonordeste.verdesmares.com.br/image/contentid/policy:1.3150265:1634763592/pug1_Easy-Resize.com.jpg"
-	issuerURL    = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_n4uOV2f8m"
+	clientID     string
+	clientSecret string
+	redirectURL  string
+	issuerURL    string
 	provider     *oidc.Provider
 	oauth2Config oauth2.Config
 )
 
 func init() {
 	var err error
-	// Initialize OIDC provider
+
+	// Obtendo as variáveis de ambiente
+	clientID = os.Getenv("CLIENT_ID")
+	clientSecret = os.Getenv("CLIENT_SECRET")
+	redirectURL = os.Getenv("REDIRECT_URL")
+	issuerURL = os.Getenv("ISSUER_URL")
+
+	// Inicializando o provedor OIDC
 	provider, err = oidc.NewProvider(context.Background(), issuerURL)
 	if err != nil {
 		log.Fatalf("Failed to create OIDC provider: %v", err)
 	}
 
-	// Set up OAuth2 config
+	// Configurando o OAuth2
 	oauth2Config = oauth2.Config{
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
@@ -50,7 +58,7 @@ func main() {
 	http.HandleFunc("/logout", handleLogout)
 	http.HandleFunc("/callback", handleCallback)
 
-	fmt.Println("Server is running on http://localhost:8080")
+	fmt.Println("Server is running on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -66,7 +74,7 @@ func handleHome(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleLogin(writer http.ResponseWriter, request *http.Request) {
-	state := "state" // Replace with a secure random string in production
+	state := "state" // Substitua por uma string aleatória e segura em produção
 	url := oauth2Config.AuthCodeURL(state, oauth2.AccessTypeOffline)
 	http.Redirect(writer, request, url, http.StatusFound)
 }
@@ -75,7 +83,7 @@ func handleCallback(writer http.ResponseWriter, request *http.Request) {
 	ctx := context.Background()
 	code := request.URL.Query().Get("code")
 
-	// Exchange the authorization code for a token
+	// Troca o código de autorização por um token
 	rawToken, err := oauth2Config.Exchange(ctx, code)
 	if err != nil {
 		http.Error(writer, "Failed to exchange token: "+err.Error(), http.StatusInternalServerError)
@@ -83,27 +91,27 @@ func handleCallback(writer http.ResponseWriter, request *http.Request) {
 	}
 	tokenString := rawToken.AccessToken
 
-	// Parse the token (do signature verification for your use case in production)
+	// Analisa o token (realize a verificação da assinatura conforme necessário em produção)
 	token, _, err := new(jwt.Parser).ParseUnverified(tokenString, jwt.MapClaims{})
 	if err != nil {
-		fmt.Printf("Error parsing token: %v\n", err)
+		log.Printf("Error parsing token: %v\n", err)
 		return
 	}
 
-	// Check if the token is valid and extract claims
+	// Verifica se o token é válido e extrai as claims
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		http.Error(writer, "Invalid claims", http.StatusBadRequest)
 		return
 	}
 
-	// Prepare data for rendering the template
+	// Prepare data para renderização da página
 	pageData := ClaimsPage{
 		AccessToken: tokenString,
 		Claims:      claims,
 	}
 
-	// Define the HTML template
+	// Define o template HTML
 	tmpl := `
     <html>
         <body>
@@ -119,12 +127,12 @@ func handleCallback(writer http.ResponseWriter, request *http.Request) {
         </body>
     </html>`
 
-	// Parse and execute the template
+	// Analisa e executa o template
 	t := template.Must(template.New("claims").Parse(tmpl))
 	t.Execute(writer, pageData)
 }
 
 func handleLogout(writer http.ResponseWriter, request *http.Request) {
-	// Here, you would clear the session or cookie if stored.
+	// Aqui, você deve limpar a sessão ou o cookie, se armazenado
 	http.Redirect(writer, request, "/", http.StatusFound)
 }

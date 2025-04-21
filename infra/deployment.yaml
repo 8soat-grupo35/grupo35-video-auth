@@ -1,40 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cognito-auth-service
+  name: cognito-go-app
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: cognito-auth-service
+      app: cognito-go-app
   template:
     metadata:
       labels:
-        app: cognito-auth-service
+        app: cognito-go-app
     spec:
       containers:
-        - name: cognito-auth-service
-          image: your-docker-repo/cognito-auth-service:latest
+        - name: cognito-go-app
+          image: irlan/grupo35-video-auth:latest
           ports:
             - containerPort: 8080
           env:
-            - name: AWS_REGION
-              valueFrom:
-                secretKeyRef:
-                  name: aws-secrets
-                  key: AWS_REGION
-            - name: COGNITO_USER_POOL_ID
-              valueFrom:
-                secretKeyRef:
-                  name: aws-secrets
-                  key: COGNITO_USER_POOL_ID
-            - name: COGNITO_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: aws-secrets
-                  key: COGNITO_CLIENT_ID
-            - name: COGNITO_CLIENT_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: aws-secrets
-                  key: COGNITO_CLIENT_SECRET
+            - name: CLIENT_ID
+              value: "16j9h9kmmlregfdcqr0fqldv6u"
+            - name: CLIENT_SECRET
+              value: "la42qrepmo3ja48cb98pjaqn8eojf1jgj0jjleqdugh52nrq76e"
+            - name: REDIRECT_URL
+              value: "https://d84l1y8p4kdic.cloudfront.net"
+            - name: ISSUER_URL
+              value: "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_zECx5gApz"
