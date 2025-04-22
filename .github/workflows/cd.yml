@@ -20,6 +20,8 @@ on:
         required: true
       COGNITO_CLIENT_ID:
         required: true
+      COGNITO_CLIENT_USER_POOL_ID:
+        required: true
       COGNITO_CLIENT_SECRET:
         required: true
       COGNITO_REDIRECT_URL:
@@ -62,7 +64,7 @@ jobs:
             --from-literal=cognito-client-id=${{ secrets.COGNITO_CLIENT_ID }} \
             --from-literal=cognito-client-secret=${{ secrets.COGNITO_CLIENT_SECRET }} \
             --from-literal=cognito-redirect-url=${{ secrets.COGNITO_REDIRECT_URL }} \
-            --from-literal=cognito-issuer-url=https://cognito-idp.${{ secrets.AWS_REGION_DEFAULT }}.amazonaws.com/${{ secrets.COGNITO_CLIENT_ID }} --dry-run=client -o yaml | kubectl apply -f -
+            --from-literal=cognito-issuer-url=https://cognito-idp.${{ secrets.AWS_REGION_DEFAULT }}.amazonaws.com/${{ secrets.COGNITO_CLIENT_USER_POOL_ID }} --dry-run=client -o yaml | kubectl apply -f -
           envsubst < infra/deployment.yaml | kubectl apply -f -
           kubectl apply -f infra/service.yaml
           kubectl set image deployment/video-auth video-auth=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION_DEFAULT }}.amazonaws.com/video-auth:latest
