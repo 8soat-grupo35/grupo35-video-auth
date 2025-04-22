@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	gateway.Oauth2Config.Init()
+	gateway.Init()
 
 	http.HandleFunc("/", handlers.HandleHome)
 	http.HandleFunc("/login", handlers.HandleLogin)

@@ -45,6 +45,6 @@ func HandleCallback(writer http.ResponseWriter, request *http.Request) {
 
 	fmt.Println("Claims:", claims)
 
-	tmpl := template.Must(template.ParseFiles("templates/claims.html"))
+	tmpl := template.Must(template.ParseFiles("internal/templates/claims.html"))
 	tmpl.Execute(writer, pageData)
 }

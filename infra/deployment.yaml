@@ -20,10 +20,22 @@ spec:
             - containerPort: 8080
           env:
             - name: CLIENT_ID
-              value: "16j9h9kmmlregfdcqr0fqldv6u"
+              valueFrom:
+                secretKeyRef:
+                  name: cognito-secrets
+                  key: cognito-client-id
             - name: CLIENT_SECRET
-              value: "la42qrepmo3ja48cb98pjaqn8eojf1jgj0jjleqdugh52nrq76e"
+              valueFrom:
+                secretKeyRef:
+                  name: cognito-secrets
+                  key: cognito-client-secret
             - name: REDIRECT_URL
-              value: "https://d84l1y8p4kdic.cloudfront.net"
+              valueFrom:
+                secretKeyRef:
+                  name: cognito-secrets
+                  key: cognito-redirect-url
             - name: ISSUER_URL
-              value: "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_zECx5gApz"
+              valueFrom:
+                secretKeyRef:
+                  name: cognito-secrets
+                  key: cognito-issuer-url

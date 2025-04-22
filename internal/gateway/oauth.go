@@ -17,7 +17,6 @@ type ClaimsPage struct {
 }
 
 type IOAuthConfig interface {
-	Init()
 	AuthCodeURL(state string, opts ...oauth2.AuthCodeOption) string
 	Exchange(ctx context.Context, code string, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error)
 }
@@ -35,7 +34,7 @@ var (
 	Oauth2Config IOAuthConfig
 )
 
-func (o *OAuth2Config) Init() {
+func Init() {
 	var err error
 
 	// Obtendo as variáveis de ambiente
@@ -57,7 +56,7 @@ func (o *OAuth2Config) Init() {
 			ClientSecret: clientSecret,
 			RedirectURL:  redirectURL,
 			Endpoint:     provider.Endpoint(),
-			Scopes:       []string{oidc.ScopeOpenID, "email", "openid", "phone"},
+			Scopes:       []string{"email", "openid", "profile"},
 		},
 	}
 }

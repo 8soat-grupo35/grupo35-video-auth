@@ -52,10 +52,11 @@ jobs:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
         run: |
           aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION_DEFAULT }}
-          kubectl create secret generic aws-secrets \
-            --from-literal=access-key-id=${{ secrets.AWS_ACCESS_KEY_ID }} \
-            --from-literal=secret-access-key=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-            --from-literal=access-session-token=${{ secrets.AWS_SESSION_TOKEN }}  --dry-run=client -o yaml | kubectl apply -f -
+          kubectl create secret generic cognito-secrets \
+            --from-literal=cognito-client-id=${{ secrets.COGNITO_CLIENT_ID }} \
+            --from-literal=cognito-client-secret=${{ secrets.COGNITO_CLIENT_SECRET }} \
+            --from-literal=cognito-redirect-url=${{ secrets.COGNITO_REDIRECT_URL }} \
+            --from-literal=cognito-issuer-url=${{ secrets.COGNITO_ISSUER_URL }}  --dry-run=client -o yaml | kubectl apply -f -
           envsubst < infra/deployment.yaml | kubectl apply -f -
           kubectl apply -f infra/service.yaml
           kubectl set image deployment/video-auth video-auth=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION_DEFAULT }}.amazonaws.com/video-auth:latest
