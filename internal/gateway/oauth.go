@@ -56,7 +56,7 @@ func Init() {
 			ClientSecret: clientSecret,
 			RedirectURL:  redirectURL,
 			Endpoint:     provider.Endpoint(),
-			Scopes:       []string{"email", "openid", "profile"},
+			Scopes:       []string{"email", "openid", "profile", "aws.cognito.signin.user.admin"},
 		},
 	}
 }
